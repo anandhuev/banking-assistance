@@ -24,7 +24,6 @@ NEARBY_BRANCHES.forEach(branch => {
 
 const state = {
   currentPage: 'login',
-  theme: 'dark' as 'light' | 'dark',
   selectedServiceId: null as ServiceType | null,
   selectedBranchId: NEARBY_BRANCHES[0].id,
   selectedSlot: null as string | null,
@@ -65,15 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo(0, 0);
   };
 
-  const toggleTheme = () => {
-    state.theme = state.theme === 'dark' ? 'light' : 'dark';
-    render();
-  };
-
   const render = () => {
-    const isDark = state.theme === 'dark';
-    document.documentElement.classList.toggle('dark', isDark);
-    document.body.className = isDark ? 'dark-mode' : 'light-mode';
+    // Force light mode
+    document.documentElement.classList.remove('dark');
+    document.body.className = 'light-mode';
 
     const header = `
       <nav class="bg-blue-900 text-white p-4 shadow-md flex justify-between items-center mb-8 transition-all">
@@ -82,9 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="font-bold text-xl tracking-tight">SmartBank Assistant</span>
         </div>
         <div class="flex items-center gap-4">
-          <button id="btn-theme-toggle" class="p-2 rounded-full hover:bg-blue-800 transition-colors" title="Toggle Theme">
-            <i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
-          </button>
           ${state.currentPage !== 'login' ? `
             <button id="btn-logout" class="bg-blue-800 hover:bg-blue-700 px-3 py-1 rounded text-xs">Logout</button>
           ` : ''}
@@ -95,15 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.currentPage === 'login') {
       root.innerHTML = `
         ${header}
-        <div class="max-w-md mx-auto mt-20 p-8 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700">
+        <div class="max-w-md mx-auto mt-20 p-8 bg-white rounded-2xl shadow-2xl border border-gray-100">
           <div class="text-center mb-8">
-            <i class="fas fa-shield-halved text-5xl text-blue-900 dark:text-blue-400 mb-4"></i>
-            <h1 class="text-2xl font-bold dark:text-white">Visit Planning Portal</h1>
+            <i class="fas fa-shield-halved text-5xl text-blue-900 mb-4"></i>
+            <h1 class="text-2xl font-bold">Visit Planning Portal</h1>
             <p class="text-gray-500 text-sm">Advisor Access</p>
           </div>
           <form id="form-login" class="space-y-6">
-            <input type="text" placeholder="Username" class="w-full px-4 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white">
-            <input type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white">
+            <input type="text" placeholder="Username" class="w-full px-4 py-2 border rounded-lg">
+            <input type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg">
             <button type="submit" class="w-full bg-blue-900 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-blue-800 transition-colors">Launch Assistant</button>
           </form>
         </div>
@@ -115,19 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
         ${header}
         <div class="max-w-6xl mx-auto px-4 pb-12">
           <div class="mb-10 text-center">
-            <h2 class="text-4xl font-black dark:text-white tracking-tight">Services Requiring In-Branch Visit</h2>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">AI-guided preparation for physical banking activities.</p>
+            <h2 class="text-4xl font-black tracking-tight">Services Requiring In-Branch Visit</h2>
+            <p class="text-gray-500 mt-2">AI-guided preparation for physical banking activities.</p>
           </div>
           
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             ${BANK_SERVICES.map(service => `
-              <div class="nav-card p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600 cursor-pointer transition-all group" data-id="${service.id}">
-                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div class="nav-card p-6 bg-white rounded-2xl shadow-xl border-2 border-transparent hover:border-blue-400 cursor-pointer transition-all group" data-id="${service.id}">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <i class="fas ${service.icon} text-xl"></i>
                 </div>
-                <h3 class="font-bold text-lg mb-1 dark:text-white">${service.label}</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">${service.description}</p>
-                <div class="flex justify-between items-center text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-wider">
+                <h3 class="font-bold text-lg mb-1">${service.label}</h3>
+                <p class="text-xs text-gray-500 mb-4">${service.description}</p>
+                <div class="flex justify-between items-center text-[10px] font-black uppercase text-blue-600 tracking-wider">
                   <span>~${service.averageTime} MINS</span>
                   <i class="fas fa-arrow-right"></i>
                 </div>
@@ -148,22 +139,22 @@ document.addEventListener('DOMContentLoaded', () => {
       root.innerHTML = `
         ${header}
         <div class="max-w-4xl mx-auto px-4 pb-12">
-          <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 transition-all">
+          <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 transition-all">
             <div class="flex items-center gap-4 mb-8">
-              <button id="btn-back" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fas fa-arrow-left text-xl"></i></button>
-              <h2 class="text-2xl font-bold dark:text-white">${service.label} Preparation</h2>
+              <button id="btn-back" class="text-gray-400 hover:text-gray-600"><i class="fas fa-arrow-left text-xl"></i></button>
+              <h2 class="text-2xl font-bold">${service.label} Preparation</h2>
             </div>
             <div class="space-y-4 mb-8">
               ${service.requiredDocuments.map(doc => {
                 const isAvail = state.docStates[doc] === true;
                 const isNotAvail = state.docStates[doc] === false;
                 return `
-                  <div class="p-4 bg-gray-50 dark:bg-slate-900/50 rounded-xl border border-transparent transition-all">
+                  <div class="p-4 bg-gray-50 rounded-xl border border-transparent transition-all">
                     <div class="flex items-center justify-between">
-                      <span class="text-sm dark:text-slate-200 font-medium">${doc}</span>
+                      <span class="text-sm font-medium">${doc}</span>
                       <div class="flex gap-2">
-                        <button class="doc-btn-available px-3 py-1.5 rounded-lg text-[10px] font-bold border ${isAvail ? 'bg-green-600 text-white border-green-600' : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500'}" data-doc="${doc}">Available</button>
-                        <button class="doc-btn-not-available px-3 py-1.5 rounded-lg text-[10px] font-bold border ${isNotAvail ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500'}" data-doc="${doc}">Not Available</button>
+                        <button class="doc-btn-available px-3 py-1.5 rounded-lg text-[10px] font-bold border ${isAvail ? 'bg-green-600 text-white border-green-600' : 'bg-white border-gray-200 text-gray-500'}" data-doc="${doc}">Available</button>
+                        <button class="doc-btn-not-available px-3 py-1.5 rounded-lg text-[10px] font-bold border ${isNotAvail ? 'bg-red-600 text-white border-red-600' : 'bg-white border-gray-200 text-gray-500'}" data-doc="${doc}">Not Available</button>
                       </div>
                     </div>
                   </div>
@@ -196,13 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="flex flex-col md:flex-row gap-8">
             <!-- LEFT COLUMN: BRANCHES -->
             <div class="md:w-1/3">
-              <h3 class="text-lg font-bold mb-4 dark:text-white uppercase tracking-wider text-gray-500">Nearby Branches</h3>
+              <h3 class="text-lg font-bold mb-4 uppercase tracking-wider text-gray-500">Nearby Branches</h3>
               <div class="space-y-4">
                 ${NEARBY_BRANCHES.map(branch => `
-                  <div class="branch-card p-5 bg-white dark:bg-slate-800 rounded-2xl border-2 cursor-pointer transition-all ${state.selectedBranchId === branch.id ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-transparent dark:border-slate-700 hover:border-blue-300'}" data-id="${branch.id}">
+                  <div class="branch-card p-5 bg-white rounded-2xl border-2 cursor-pointer transition-all ${state.selectedBranchId === branch.id ? 'border-blue-500 bg-blue-50/50' : 'border-transparent hover:border-blue-300'}" data-id="${branch.id}">
                     <div class="flex justify-between items-center">
-                      <span class="font-bold dark:text-white">${branch.name}</span>
-                      <span class="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 px-2 py-0.5 rounded-full">${branch.distance} km</span>
+                      <span class="font-bold">${branch.name}</span>
+                      <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">${branch.distance} km</span>
                     </div>
                   </div>
                 `).join('')}
@@ -230,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <!-- BOTTOM: ALL SLOTS -->
               <div>
-                <h3 class="text-lg font-bold mb-4 dark:text-white uppercase tracking-wider text-gray-500">All Available Slots</h3>
+                <h3 class="text-lg font-bold mb-4 uppercase tracking-wider text-gray-500">All Available Slots</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   ${slotsData.map(item => {
                     let crowdClass = 'slot-low';
@@ -241,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     return `
                       <button class="slot-tile p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 ${crowdClass} ${isSelected ? 'selected-slot' : ''} ${isRecommended ? 'border-dashed border-blue-400' : ''}" data-slot="${item.slot}">
-                        ${isRecommended ? '<span class="text-[8px] font-black text-blue-600 dark:text-blue-400 absolute -top-2 bg-white dark:bg-slate-900 px-2 rounded-full border border-blue-400">AI BEST</span>' : ''}
+                        ${isRecommended ? '<span class="text-[8px] font-black text-blue-600 absolute -top-2 bg-white px-2 rounded-full border border-blue-400">AI BEST</span>' : ''}
                         <span class="text-sm font-black">${item.slot}</span>
                         <span class="text-[9px] uppercase font-bold opacity-60">${item.crowd} CROWD</span>
                       </button>
@@ -272,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('logo-home')?.addEventListener('click', () => { if (state.currentPage !== 'login') navigateTo('dashboard'); });
     document.getElementById('btn-logout')?.addEventListener('click', () => navigateTo('login'));
-    document.getElementById('btn-theme-toggle')?.addEventListener('click', toggleTheme);
   };
 
   render();
