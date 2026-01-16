@@ -1,5 +1,4 @@
-
-import { BankService } from './types';
+import { BankService, Branch } from './types';
 
 export const BANK_SERVICES: BankService[] = [
   {
@@ -23,6 +22,13 @@ export const BANK_SERVICES: BankService[] = [
     requiredDocuments: ['Physical Passbook', 'Identity Proof'],
     averageTime: 10
   }
+];
+
+export const NEARBY_BRANCHES: Branch[] = [
+  { id: 'b1', name: 'Downtown Main Branch', distance: 0.8 },
+  { id: 'b3', name: 'Metro Square Hub', distance: 1.2 },
+  { id: 'b2', name: 'Westside Business Park', distance: 2.4 },
+  { id: 'b4', name: 'Suburban Plaza Branch', distance: 5.1 }
 ];
 
 export const TIME_SLOTS = [

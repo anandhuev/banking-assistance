@@ -1,18 +1,22 @@
-
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import AppointmentBooking from './components/AppointmentBooking';
 import StatusTracker from './components/StatusTracker';
-import { Appointment, ServiceType } from './types';
+import LoanAssistant from './components/LoanAssistant';
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<string | null>(localStorage.getItem('bank_user'));
+  const [user, setUser] = useState<string | null>(() => localStorage.getItem('bank_user'));
   const [darkMode, setDarkMode] = useState<boolean>(true);
-  const [activeAppointment, setActiveAppointment] = useState<Appointment | null>(() => {
+  const [activeAppointment, setActiveAppointment] = useState<any>(() => {
     const saved = localStorage.getItem('active_appointment');
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      return null;
+    }
   });
 
   useEffect(() => {
@@ -35,7 +39,7 @@ const App: React.FC = () => {
     setActiveAppointment(null);
   };
 
-  const setAppointment = (app: Appointment) => {
+  const setAppointment = (app: any) => {
     setActiveAppointment(app);
     localStorage.setItem('active_appointment', JSON.stringify(app));
   };
@@ -46,8 +50,7 @@ const App: React.FC = () => {
         <nav className="bg-blue-900 dark:bg-[#1e293b] text-white p-4 shadow-md flex justify-between items-center border-b border-blue-800 dark:border-slate-700">
           <Link 
             to="/dashboard" 
-            className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer focus:outline-none"
-            aria-label="SmartBank Dashboard"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <i className="fas fa-university text-2xl"></i>
             <span className="font-bold text-xl tracking-tight">SmartBank Assistant</span>
@@ -55,8 +58,7 @@ const App: React.FC = () => {
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-full hover:bg-blue-800 dark:hover:bg-slate-700 transition-colors focus:outline-none"
-              title={`Switch to ${darkMode ? 'Light' : 'Dark'} Mode`}
+              className="p-2 rounded-full hover:bg-blue-800 dark:hover:bg-slate-700 transition-colors"
             >
               <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-lg`}></i>
             </button>
@@ -76,15 +78,16 @@ const App: React.FC = () => {
 
         <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">
           <Routes>
-            <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-            <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
-            <Route path="/book/:serviceId" element={user ? <AppointmentBooking onBook={setAppointment} /> : <Navigate to="/login" />} />
-            <Route path="/status" element={user ? <StatusTracker appointment={activeAppointment} setAppointment={setAppointment} /> : <Navigate to="/login" />} />
-            <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+            <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" replace />} />
+            <Route path="/book/:serviceId" element={user ? <AppointmentBooking onBook={setAppointment} /> : <Navigate to="/login" replace />} />
+            <Route path="/status" element={user ? <StatusTracker appointment={activeAppointment} setAppointment={setAppointment} /> : <Navigate to="/login" replace />} />
+            <Route path="/loan-assistant" element={user ? <LoanAssistant /> : <Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
           </Routes>
         </main>
 
-        <footer className="bg-white dark:bg-[#1e293b] border-t dark:border-slate-700 p-4 text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300">
+        <footer className="bg-white dark:bg-[#1e293b] border-t dark:border-slate-700 p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
           &copy; {new Date().getFullYear()} SmartBank Advisory System. Demo purposes only.
         </footer>
       </div>

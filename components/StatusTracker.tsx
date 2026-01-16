@@ -68,7 +68,8 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ appointment, setAppointme
               Live Status
             </span>
             <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-2">{appointment.id}</h2>
-            <p className="text-gray-500 dark:text-gray-400">{service?.label}</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">{service?.label}</p>
+            <p className="text-xs text-gray-400 mt-1"><i className="fas fa-map-marker-alt mr-1"></i> {appointment.branchName}</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-gray-400 dark:text-gray-500">Scheduled Time</p>
@@ -124,8 +125,8 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ appointment, setAppointme
                 {appointment.status === 'Completed' && "Service complete!"}
               </h4>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {appointment.status === 'Scheduled' && `Please arrive at the branch by ${appointment.timeSlot}.`}
-                {appointment.status === 'Not Arrived' && "The branch is expecting you. Scan your digital QR at the kiosk upon arrival."}
+                {appointment.status === 'Scheduled' && `Please arrive at the ${appointment.branchName} by ${appointment.timeSlot}.`}
+                {appointment.status === 'Not Arrived' && `The ${appointment.branchName} is expecting you. Scan your digital QR at the kiosk upon arrival.`}
                 {appointment.status === 'In Progress' && `Our executive is processing your ${service?.label}. Total estimated time: ${service?.averageTime} mins.`}
                 {appointment.status === 'Completed' && "Thank you for banking with us. We've emailed your service acknowledgement."}
               </p>

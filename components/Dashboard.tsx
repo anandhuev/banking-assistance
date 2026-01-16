@@ -32,9 +32,17 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <header className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">What can we help you with today?</h2>
-        <p className="text-gray-600 dark:text-gray-400">Select a service to see required documents and prepare for your visit.</p>
+      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">What can we help you with today?</h2>
+          <p className="text-gray-600 dark:text-gray-400">Select a service to see required documents and prepare for your visit.</p>
+        </div>
+        <button 
+          onClick={() => navigate('/loan-assistant')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20"
+        >
+          <i className="fas fa-hand-holding-usd"></i> Loan Guidance Assistant
+        </button>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
