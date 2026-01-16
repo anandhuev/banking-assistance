@@ -1,0 +1,132 @@
+
+/* SmartBank Assistant - Redesigned UI System */
+
+:root {
+    --bg-color: #f8fafc;
+    --text-color: #0f172a;
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --input-text: #1e293b;
+    --input-border: #cbd5e1;
+    --input-focus: #2563eb;
+    --placeholder-color: #64748b;
+}
+
+.dark-mode {
+    --bg-color: #0f172a;
+    --text-color: #f8fafc;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --input-bg: #f1f5f9;
+    --input-text: #0f172a;
+    --input-border: #94a3b8;
+    --input-focus: #3b82f6;
+    --placeholder-color: #475569;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Appointment Redesign Components */
+
+.branch-card {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.branch-card:hover {
+    transform: translateX(4px);
+}
+
+.ai-recommendation-box {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    box-shadow: 0 25px 50px -12px rgba(30, 58, 138, 0.5);
+}
+
+.slot-tile {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.slot-tile:hover:not(.selected-slot) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Slot Crowd Indicators (Strong Colors) */
+
+.slot-low {
+    background-color: #f0fdf4 !important;
+    border-color: #bbf7d0 !important;
+    color: #166534 !important;
+}
+.dark-mode .slot-low {
+    background-color: rgba(22, 101, 52, 0.1) !important;
+    border-color: #14532d !important;
+    color: #4ade80 !important;
+}
+
+.slot-medium {
+    background-color: #fefce8 !important;
+    border-color: #fef08a !important;
+    color: #854d0e !important;
+}
+.dark-mode .slot-medium {
+    background-color: rgba(133, 77, 14, 0.1) !important;
+    border-color: #713f12 !important;
+    color: #facc15 !important;
+}
+
+.slot-high {
+    background-color: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: #991b1b !important;
+}
+.dark-mode .slot-high {
+    background-color: rgba(153, 27, 27, 0.1) !important;
+    border-color: #7f1d1d !important;
+    color: #f87171 !important;
+}
+
+.selected-slot {
+    background-color: #1e3a8a !important;
+    border-color: #1e3a8a !important;
+    color: white !important;
+    transform: scale(1.05);
+    z-index: 5;
+    box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.4);
+}
+
+/* Animations */
+
+.animate-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Fields Fix */
+input, select, textarea {
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 0.75rem !important;
+    padding: 0.75rem 1rem !important;
+    outline: none !important;
+}
+
+input:focus {
+    border-color: var(--input-focus) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+}

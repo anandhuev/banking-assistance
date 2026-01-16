@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BANK_SERVICES } from '../constants';
 import { BankService, DocumentGuidance } from '../types';
@@ -32,20 +32,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">What can we help you with today?</h2>
-          <p className="text-gray-600 dark:text-gray-400">Select a service to see required documents and prepare for your visit.</p>
-        </div>
-        <button 
-          onClick={() => navigate('/loan-assistant')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20"
-        >
-          <i className="fas fa-hand-holding-usd"></i> Loan Guidance Assistant
-        </button>
+      <header className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">What can we help you with today?</h2>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">Select a service to see required documents and prepare for your visit.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {BANK_SERVICES.map(service => (
           <button
             key={service.id}
@@ -57,10 +49,10 @@ const Dashboard: React.FC = () => {
             }`}
           >
             <div className="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-300 w-10 h-10 rounded-lg flex items-center justify-center mb-4">
-              <i className={`fas ${service.id === 'open_account' ? 'fa-user-plus' : service.id === 'kyc_update' ? 'fa-id-card' : 'fa-book-open'}`}></i>
+              <i className={`fas ${service.icon || 'fa-file-alt'}`}></i>
             </div>
             <h3 className="font-bold text-gray-900 dark:text-gray-100">{service.label}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{service.description}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Est. time: {service.averageTime} mins</p>
           </button>
         ))}
       </div>
@@ -70,7 +62,7 @@ const Dashboard: React.FC = () => {
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Document Preparation</h3>
             <span className="text-sm bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full text-gray-600 dark:text-gray-400">
-              Est. Service Time: {selectedService.averageTime} mins
+              {selectedService.label}
             </span>
           </div>
           
@@ -97,8 +89,8 @@ const Dashboard: React.FC = () => {
                       onClick={() => setDocAvailability(doc, false)}
                       className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 border ${
                         docStates[doc] === false 
-                        ? 'bg-orange-600 border-orange-600 text-white shadow-sm' 
-                        : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:border-orange-300 dark:hover:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                        ? 'bg-red-600 border-red-600 text-white shadow-sm' 
+                        : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:border-red-300 dark:hover:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20'
                       }`}
                     >
                       <i className="fas fa-times"></i> Not Available
@@ -107,20 +99,44 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 {docStates[doc] === false && guidance[doc] && (
-                  <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/10 rounded-lg border border-yellow-100 dark:border-yellow-900/30">
+                  <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-900/30">
                     {guidance[doc] === 'loading' ? (
-                      <div className="flex items-center space-x-2 text-yellow-700 dark:text-yellow-500 animate-pulse">
+                      <div className="flex items-center space-x-2 text-amber-700 dark:text-amber-500 animate-pulse">
                         <i className="fas fa-robot"></i>
-                        <span className="text-sm">AI is finding official guidance...</span>
+                        <span className="text-sm">AI Documentation Advisor is preparing guidance...</span>
                       </div>
                     ) : (
-                      <div className="space-y-2 text-sm">
-                        <p className="text-yellow-900 dark:text-yellow-400 font-semibold flex items-center gap-2">
-                           <i className="fas fa-lightbulb"></i> Official Advisory
-                        </p>
-                        <p className="text-yellow-800 dark:text-yellow-500"><strong>Requirement:</strong> {(guidance[doc] as DocumentGuidance).reason}</p>
-                        <p className="text-yellow-800 dark:text-yellow-500"><strong>How to obtain:</strong> {(guidance[doc] as DocumentGuidance).procurementMethod}</p>
-                        <p className="text-yellow-700 dark:text-yellow-600 italic">Est. collection time: {(guidance[doc] as DocumentGuidance).estimatedWait}</p>
+                      <div className="space-y-4 text-xs">
+                        <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold">
+                          <i className="fas fa-magic"></i>
+                          <span className="uppercase tracking-wider">Missing Document Advisory</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-amber-900/80 dark:text-amber-300/80 leading-relaxed">
+                          <div>
+                            <p className="font-bold text-amber-950 dark:text-amber-200">Why required:</p>
+                            <p>{(guidance[doc] as DocumentGuidance).reason}</p>
+                          </div>
+                          <div>
+                            <p className="font-bold text-amber-950 dark:text-amber-200">How to obtain:</p>
+                            <p>{(guidance[doc] as DocumentGuidance).procurementMethod}</p>
+                          </div>
+                          <div>
+                            <p className="font-bold text-amber-950 dark:text-amber-200">Common Delay Risks:</p>
+                            <p>Application errors, missing endorsements, or expired validation periods.</p>
+                          </div>
+                          <div>
+                            <p className="font-bold text-amber-950 dark:text-amber-200">Typical Wait Time:</p>
+                            <p>{(guidance[doc] as DocumentGuidance).estimatedWait || '1-5 Business Days'}</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 p-3 bg-white/50 dark:bg-amber-900/20 rounded-lg border border-amber-200/50 dark:border-amber-800/50">
+                          <p className="font-bold text-amber-900 dark:text-amber-200 mb-1 flex items-center gap-2">
+                            <i className="fas fa-hand-paper"></i> AI Recommendation
+                          </p>
+                          <p className="text-amber-950/80 dark:text-amber-300/80">
+                            We strongly recommend waiting until you have this document in hand. Proceeding with the visit now will likely result in an incomplete application and a required follow-up visit.
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
