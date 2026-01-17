@@ -2,7 +2,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BANK_SERVICES } from '../constants';
-import { BankService, ServiceType } from '../types';
+import { BankService, ServiceType, Appointment } from '../types';
+
+interface DashboardProps {
+  activeAppointment?: Appointment | null;
+  setAppointment?: (app: Appointment | null) => void;
+}
 
 interface StaticGuidance {
   reason: string;
@@ -142,20 +147,41 @@ const DOCUMENT_GUIDANCE_DATA: Record<string, StaticGuidance> = {
   }
 };
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment }) => {
   const navigate = useNavigate();
   const [selectedService, setSelectedService] = useState<BankService | null>(null);
   const [docStates, setDocStates] = useState<Record<string, boolean | undefined>>({});
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [isWidgetExpanded, setIsWidgetExpanded] = useState(false);
 
   const handleServiceSelect = (service: BankService) => {
     setSelectedService(service);
     const initialDocs: Record<string, boolean | undefined> = {};
     service.requiredDocuments.forEach(d => initialDocs[d] = undefined);
     setDocStates(initialDocs);
+    // Smooth scroll to panel
+    setTimeout(() => {
+      document.getElementById('preparation-panel')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const setDocAvailability = (doc: string, isAvailable: boolean) => {
     setDocStates(prev => ({ ...prev, [doc]: isAvailable }));
+  };
+
+  const handleConfirmCancel = () => {
+    if (setAppointment) setAppointment(null);
+    setShowCancelModal(false);
+    setIsWidgetExpanded(false);
+  };
+
+  const handleConfirmReschedule = () => {
+    if (activeAppointment) {
+      navigate(`/book/${activeAppointment.serviceId}`);
+    }
+    setShowRescheduleModal(false);
+    setIsWidgetExpanded(false);
   };
 
   const allReady = selectedService?.requiredDocuments.every(doc => docStates[doc] === true) ?? false;
@@ -186,7 +212,133 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative pb-20">
+      {/* Cancellation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Cancel Appointment?</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to cancel your visit at <span className="font-bold text-blue-900">{activeAppointment?.timeSlot}</span>?
+            </p>
+            <div className="space-y-3">
+              <button 
+                onClick={handleConfirmCancel}
+                className="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors"
+              >
+                Cancel Appointment
+              </button>
+              <button 
+                onClick={() => setShowCancelModal(false)}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+              >
+                Don't Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Modal */}
+      {showRescheduleModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Reschedule Visit?</h3>
+            <p className="text-gray-600 mb-6">
+              Do you want to change your time slot from <span className="font-bold text-blue-900">{activeAppointment?.timeSlot}</span>?
+            </p>
+            <div className="space-y-3">
+              <button 
+                onClick={handleConfirmReschedule}
+                className="w-full bg-blue-900 text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition-colors"
+              >
+                Yes, Reschedule
+              </button>
+              <button 
+                onClick={() => setShowRescheduleModal(false)}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+              >
+                Don't Reschedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Slit-Style Collapsible Widget */}
+      {activeAppointment && (
+        <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 ease-in-out ${isWidgetExpanded ? 'w-72 h-auto' : 'w-48 h-10'} bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-blue-50 overflow-hidden`}>
+          {/* Collapsed Slit State */}
+          {!isWidgetExpanded && (
+            <div 
+              className="w-full h-full flex items-center justify-between px-4 cursor-pointer hover:bg-blue-50 transition-colors"
+              onClick={() => setIsWidgetExpanded(true)}
+            >
+              <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                </span>
+                Live Visit Status
+              </span>
+              <i className="fas fa-chevron-up text-blue-600 text-[10px]"></i>
+            </div>
+          )}
+
+          {/* Expanded Card State */}
+          {isWidgetExpanded && (
+            <div className="p-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="flex justify-between items-start mb-3">
+                <span className="text-[10px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-widest border border-blue-100">
+                  Live Tracker
+                </span>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => navigate('/status')} 
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-blue-700 hover:bg-blue-50 transition-all"
+                    title="Maximize Status View"
+                  >
+                    <i className="fas fa-expand-alt text-[10px]"></i>
+                  </button>
+                  <button 
+                    onClick={() => setIsWidgetExpanded(false)} 
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-blue-700 hover:bg-blue-50 transition-all"
+                    title="Collapse"
+                  >
+                    <i className="fas fa-chevron-down text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h5 className="font-extrabold text-gray-900 text-base mb-0.5">{activeAppointment.timeSlot}</h5>
+                <p className="text-[11px] text-gray-500 font-medium">SmartBank Main Branch</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <p className="text-[11px] font-bold text-blue-900 uppercase tracking-tighter">
+                    Status: {activeAppointment.status === 'Scheduled' ? 'Visit Scheduled' : activeAppointment.status}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setShowRescheduleModal(true)} 
+                  className="flex-1 text-[10px] font-bold py-2 rounded-xl border border-gray-100 bg-gray-50 text-gray-700 hover:bg-white hover:border-blue-200 transition-all shadow-sm"
+                >
+                  Reschedule
+                </button>
+                <button 
+                  onClick={() => setShowCancelModal(true)} 
+                  className="flex-1 text-[10px] font-bold py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-all border border-red-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <header className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800">What can we help you with today?</h2>
         <p className="text-gray-600">Select a service to verify your documents and book a priority visit.</p>
@@ -215,7 +367,6 @@ const Dashboard: React.FC = () => {
       {selectedService && (
         <div id="preparation-panel" className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 animate-in fade-in duration-500">
           
-          {/* General Service AI Guidance Box */}
           <div className="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
             <h4 className="text-blue-900 font-bold flex items-center gap-2 mb-4">
               <i className="fas fa-robot text-lg"></i>

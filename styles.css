@@ -1,13 +1,13 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* Main Dashboard Card Grid - Increased gap for prominence */
+/* Main Dashboard Card Grid */
 .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
     gap: 2.5rem !important; 
     margin-top: 2rem !important;
 }
 
-/* Service Box / Card Styling - Increased size and padding */
+/* Service Card Styling */
 .grid button.transition-all.border-2 {
     padding: 3rem 2.5rem !important; 
     min-height: 280px !important; 
@@ -22,7 +22,6 @@
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.2s ease !important;
 }
 
-/* Card Icon Container - Larger and more spaced */
 .grid button.transition-all.border-2 div.bg-blue-100 {
     width: 4.5rem !important; 
     height: 4.5rem !important;
@@ -34,28 +33,20 @@
     justify-content: center !important;
 }
 
-/* Service Title - Increased font weight and size */
 .grid button.transition-all.border-2 h3 {
     font-size: 1.5rem !important; 
     font-weight: 800 !important;
     color: #111827 !important;
     line-height: 1.3 !important;
-    margin-top: 0 !important;
 }
 
-/* Service Description - Better readability */
 .grid button.transition-all.border-2 p {
     font-size: 1rem !important; 
     margin-top: 1.25rem !important;
     color: #4b5563 !important;
     line-height: 1.6 !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
 }
 
-/* Hover State - Enhanced physical elevation */
 .grid button.transition-all.border-2:hover {
     transform: translateY(-10px) scale(1.02) !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
@@ -63,38 +54,67 @@
     z-index: 10;
 }
 
-/* Selected State - Prominent highlight */
-.grid button.transition-all.border-2.border-blue-600 {
-    background-color: #f8fbff !important;
-    border-color: #1e40af !important;
-    border-width: 3px !important;
-    box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.1) !important;
-}
-
-/* Header Prominence */
-header h2 {
-    font-size: 2.5rem !important;
-    letter-spacing: -0.03em !important;
-    font-weight: 800 !important;
-}
-
-/* Checklist Panel Adjustments */
+/* Preparation Panel adjustments */
 #preparation-panel {
     margin-top: 5rem !important;
     padding: 3.5rem !important;
     border-radius: 2rem !important;
-    border: 1px solid #f1f5f9 !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Guidance Box Spacing */
-.bg-yellow-50, .bg-blue-50 {
-    padding: 2.5rem !important;
-    border-radius: 1.5rem !important;
-    margin-top: 2rem !important;
+/* Slit UI Widget Specific Styles */
+.fixed.bottom-6.right-6 {
+    will-change: width, height, transform;
 }
 
-/* LARGE SCREEN OVERRIDES - Making cards bold and spacious */
+/* Ensure the widget doesn't hide behind other things but is subtle */
+.bg-white.rounded-2xl.shadow-\[0_20px_60px_-15px_rgba\(0\2c 0\2c 0\2c 0\.15\)\] {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Animated ping for live feel */
+@keyframes status-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.floating-status-active {
+    animation: status-pulse 3s infinite ease-in-out;
+}
+
+/* Custom Appointment Cards */
+.bg-green-50 { background-color: #f0fdf4 !important; }
+.border-green-200 { border-color: #bbf7d0 !important; }
+.bg-blue-50 { background-color: #eff6ff !important; }
+.border-blue-200 { border-color: #bfdbfe !important; }
+.bg-red-50 { background-color: #fef2f2 !important; }
+.border-red-200 { border-color: #fecaca !important; }
+.bg-gray-50 { background-color: #f9fafb !important; }
+.border-gray-200 { border-color: #e5e7eb !important; }
+
+/* Appointment List Specific UI */
+h3.uppercase.tracking-widest {
+    border-left: 3px solid transparent;
+    padding-left: 0.75rem;
+}
+h3.text-blue-900.uppercase.tracking-widest {
+    border-left-color: #1e40af;
+}
+
+/* Status Tracker Button Pulse */
+.bg-blue-900.animate-pulse-button {
+    animation: pulse-button 2s infinite;
+}
+
+@keyframes pulse-button {
+    0% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(30, 64, 175, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0); }
+}
+
+/* Screen size adaptations */
 @media (min-width: 1280px) {
     .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
         gap: 3.5rem !important;
@@ -105,38 +125,19 @@ header h2 {
         min-height: 380px !important; 
         border-radius: 2rem !important;
     }
-
-    .grid button.transition-all.border-2 div.bg-blue-100 {
-        width: 5.5rem !important; 
-        height: 5.5rem !important;
-        margin-bottom: 3rem !important; 
-        font-size: 2.25rem !important;
-    }
-
-    .grid button.transition-all.border-2 h3 {
-        font-size: 1.85rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-
-    .grid button.transition-all.border-2 p {
-        font-size: 1.125rem !important;
-        line-height: 1.7 !important;
-    }
 }
 
-/* Time Slot Group Styling */
-h5.uppercase.tracking-widest {
-    border-left: 3px solid #e5e7eb;
-    padding-left: 0.75rem;
-    margin-bottom: 1rem;
+/* Custom Scrollbar for better aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
 }
-
-/* Lunch Break Block Specific Styling */
-.bg-gray-100.border-gray-200.rounded-xl.p-3 {
-    transition: opacity 0.3s ease;
-    cursor: default !important;
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
 }
-
-.bg-gray-100.border-gray-200.rounded-xl.p-3:hover {
-    opacity: 0.8;
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }

@@ -23,7 +23,7 @@ export interface Appointment {
   serviceId: ServiceType;
   userName: string;
   timeSlot: string;
-  status: 'Scheduled' | 'Not Arrived' | 'In Progress' | 'Completed';
+  status: 'Scheduled' | 'Arrived' | 'In Progress' | 'Completed' | 'Cancelled';
   createdAt: number;
 }
 

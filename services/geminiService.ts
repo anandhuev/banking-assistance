@@ -1,16 +1,17 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-
 /**
- * getSmartTimeRecommendation uses AI to suggest optimal visit times 
+ * getSmartTimeRecommendation uses AI to suggest optimal visit arrival times 
  * based on current load and service complexity.
  */
 export const getSmartTimeRecommendation = async (service: string, currentLoad: number): Promise<string[]> => {
+  // Fixed: Initialize GoogleGenAI inside the function using the environment variable directly.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Based on a bank service "${service}" and a current branch crowd level of ${currentLoad}/100, suggest 3 best time slots between 9 AM and 4 PM to visit for minimal wait. Format as a simple array of strings.`,
+    contents: `Based on a bank service "${service}" and a current branch crowd level of ${currentLoad}/100, suggest 3 best arrival times (e.g., "10:30 AM") between 10 AM and 5 PM to visit for minimal wait. Format as a simple array of strings. Do not provide ranges.`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -21,6 +22,7 @@ export const getSmartTimeRecommendation = async (service: string, currentLoad: n
   });
 
   try {
+    // Fixed: Correctly accessing the text property on the response object.
     const jsonStr = response.text.trim();
     return JSON.parse(jsonStr);
   } catch (e) {
