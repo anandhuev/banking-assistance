@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface LoginProps {
@@ -11,7 +10,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Allow login with any name and password combination
     if (name.trim()) onLogin(name);
   };
 
@@ -19,7 +17,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg mt-20 border border-gray-100">
       <div className="text-center mb-8">
         <i className="fas fa-university text-5xl text-blue-900 mb-4"></i>
-        <h1 className="text-2xl font-bold text-gray-800">SmartBank Access</h1>
+        <h1 className="text-2xl font-bold text-gray-800">XYZ Bank Access</h1>
         <p className="text-gray-500 text-sm">Sign in to your advisor dashboard</p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">

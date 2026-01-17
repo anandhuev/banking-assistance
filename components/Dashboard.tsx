@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BANK_SERVICES } from '../constants';
@@ -68,7 +67,7 @@ const SERVICE_ADVICE_DATA: Record<ServiceType, ServiceAdvice> = {
     branchAdvice: 'Avoid the lunch hour (1:00 PM - 2:00 PM) as vault access is restricted.'
   },
   'grievance': {
-    whyPhysical: 'Complex issues often require a face-to-face meeting with a branch manager for resolution.',
+    whyPhysical: 'Complex issues often require a face-to-face meeting with a manager for resolution.',
     documentsBrief: 'Grievance form and all supporting transaction evidence.',
     commonMistakes: 'Not having transaction reference numbers or dates ready.',
     branchAdvice: 'Bring all printed evidence; digital copies can sometimes slow down formal filing.'
@@ -160,7 +159,6 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
     const initialDocs: Record<string, boolean | undefined> = {};
     service.requiredDocuments.forEach(d => initialDocs[d] = undefined);
     setDocStates(initialDocs);
-    // Smooth scroll to panel
     setTimeout(() => {
       document.getElementById('preparation-panel')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
@@ -212,8 +210,7 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
   };
 
   return (
-    <div className="space-y-6 relative pb-20">
-      {/* Cancellation Modal */}
+    <div className="space-y-6 relative pb-20 max-w-[1500px] mx-auto">
       {showCancelModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
@@ -239,7 +236,6 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
         </div>
       )}
 
-      {/* Reschedule Modal */}
       {showRescheduleModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
@@ -265,10 +261,8 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
         </div>
       )}
 
-      {/* Slit-Style Collapsible Widget */}
       {activeAppointment && (
         <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 ease-in-out ${isWidgetExpanded ? 'w-72 h-auto' : 'w-48 h-10'} bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-blue-50 overflow-hidden`}>
-          {/* Collapsed Slit State */}
           {!isWidgetExpanded && (
             <div 
               className="w-full h-full flex items-center justify-between px-4 cursor-pointer hover:bg-blue-50 transition-colors"
@@ -285,7 +279,6 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
             </div>
           )}
 
-          {/* Expanded Card State */}
           {isWidgetExpanded && (
             <div className="p-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
               <div className="flex justify-between items-start mb-3">
@@ -312,10 +305,10 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
               
               <div className="mb-4">
                 <h5 className="font-extrabold text-gray-900 text-base mb-0.5">{activeAppointment.timeSlot}</h5>
-                <p className="text-[11px] text-gray-500 font-medium">SmartBank Main Branch</p>
+                <p className="text-[11px] text-gray-500 font-medium">XYZ Bank Branch Visit</p>
                 <div className="flex items-center gap-2 mt-2">
                   <p className="text-[11px] font-bold text-blue-900 uppercase tracking-tighter">
-                    Status: {activeAppointment.status === 'Scheduled' ? 'Visit Scheduled' : activeAppointment.status}
+                    Status: {activeAppointment.status}
                   </p>
                 </div>
               </div>
@@ -339,12 +332,22 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
         </div>
       )}
 
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-8 flex items-center gap-4 shadow-sm animate-in fade-in duration-700">
+        <div className="bg-blue-900 text-white w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-inner">
+          <i className="fas fa-bolt text-sm"></i>
+        </div>
+        <div>
+          <h4 className="text-blue-900 font-black text-[10px] uppercase tracking-widest leading-none mb-1">XYZ Smart Assistant Enabled</h4>
+          <p className="text-blue-700 text-[12px] font-medium leading-tight">Prepare documents and schedule visits at optimal, low-crowd hours automatically for a seamless branch experience.</p>
+        </div>
+      </div>
+
       <header className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">What can we help you with today?</h2>
-        <p className="text-gray-600">Select a service to verify your documents and book a priority visit.</p>
+        <h2 className="text-3xl font-black text-gray-800 tracking-tight">Available Banking Services</h2>
+        <p className="text-gray-500 font-medium mt-1">Select a service below to begin your XYZ Bank smart planning experience.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {BANK_SERVICES.map(service => (
           <button
             key={service.id}
@@ -359,20 +362,19 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
               <i className={`fas ${getServiceIcon(service.id)}`}></i>
             </div>
             <h3 className="font-bold text-gray-900 text-lg leading-tight">{service.label}</h3>
-            <p className="text-xs text-gray-500 mt-2 line-clamp-2">{service.description}</p>
+            <p className="text-xs text-gray-500 mt-2 line-clamp-2 font-medium">{service.description}</p>
           </button>
         ))}
       </div>
 
       {selectedService && (
-        <div id="preparation-panel" className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 animate-in fade-in duration-500">
-          
-          <div className="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
+        <div id="preparation-panel" className="bg-white p-10 rounded-xl shadow-sm border border-gray-100 animate-in fade-in duration-500">
+          <div className="mb-8 p-8 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
             <h4 className="text-blue-900 font-bold flex items-center gap-2 mb-4">
               <i className="fas fa-robot text-lg"></i>
-              AI Visit Strategy: {selectedService.label}
+              XYZ AI Visit Strategy: {selectedService.label}
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
               <div>
                 <p className="text-blue-800 font-semibold mb-1">Why visit the branch?</p>
                 <p className="text-blue-700 leading-relaxed">{SERVICE_ADVICE_DATA[selectedService.id].whyPhysical}</p>
@@ -394,7 +396,7 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
 
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-gray-800">Checklist: {selectedService.label}</h3>
-            <span className="text-sm bg-gray-100 px-3 py-1 rounded-full text-gray-600">
+            <span className="text-sm bg-gray-100 px-3 py-1 rounded-full text-gray-600 font-bold">
               Est. Service Time: {selectedService.averageTime} mins
             </span>
           </div>
@@ -405,7 +407,7 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
               return (
                 <div key={doc} className="border-b pb-6 last:border-0">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <span className={`text-lg font-medium ${docStates[doc] === true ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                    <span className={`text-lg font-bold ${docStates[doc] === true ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
                       {doc}
                     </span>
                     
@@ -437,20 +439,12 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
                     <div className="mt-4 p-5 bg-yellow-50 rounded-xl border border-yellow-200 shadow-sm">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-yellow-900 font-bold mb-1"><i className="fas fa-info-circle mr-2"></i>Why it's needed</p>
+                          <p className="text-yellow-900 font-bold mb-1">Why it's needed</p>
                           <p className="text-yellow-800 leading-relaxed">{info.reason}</p>
                         </div>
                         <div>
-                          <p className="text-yellow-900 font-bold mb-1"><i className="fas fa-clock mr-2"></i>Delay Reason</p>
-                          <p className="text-yellow-800 leading-relaxed">{info.delay}</p>
-                        </div>
-                        <div>
-                          <p className="text-yellow-900 font-bold mb-1"><i className="fas fa-tools mr-2"></i>How to obtain</p>
+                          <p className="text-yellow-900 font-bold mb-1">How to obtain</p>
                           <p className="text-yellow-800 leading-relaxed">{info.how}</p>
-                        </div>
-                        <div>
-                          <p className="text-yellow-900 font-bold mb-1"><i className="fas fa-hourglass-half mr-2"></i>Typical wait time</p>
-                          <p className="text-yellow-800 leading-relaxed">{info.time}</p>
                         </div>
                       </div>
                       <div className="mt-4 pt-4 border-t border-yellow-200">
@@ -469,13 +463,13 @@ const Dashboard: React.FC<DashboardProps> = ({ activeAppointment, setAppointment
           <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-2 text-sm">
               <i className={`fas ${allReady ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-gray-400'}`}></i>
-              <span className={allReady ? 'text-green-700 font-medium' : 'text-gray-500'}>
+              <span className={allReady ? 'text-green-700 font-bold' : 'text-gray-500 font-medium'}>
                 {allReady ? "Ready! All documents verified." : "Please prepare all documents to continue."}
               </span>
             </div>
             <button
               onClick={() => navigate(`/book/${selectedService.id}`)}
-              className={`px-8 py-3 rounded-lg font-bold shadow-lg transition-all ${allReady ? 'bg-blue-900 text-white hover:bg-blue-800 transform hover:-translate-y-0.5' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+              className={`px-12 py-4 rounded-xl font-black shadow-xl transition-all ${allReady ? 'bg-blue-900 text-white hover:bg-blue-800 transform hover:-translate-y-0.5' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
               disabled={!allReady}
             >
               Book Smart Appointment

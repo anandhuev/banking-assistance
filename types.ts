@@ -18,12 +18,25 @@ export interface BankService {
   averageTime: number; // minutes
 }
 
+export interface Branch {
+  id: string;
+  name: string;
+  address: string;
+  state: string;
+  city: string;
+  lat: number;
+  lng: number;
+  crowdTag?: string;
+}
+
 export interface Appointment {
   id: string;
   serviceId: ServiceType;
+  branchId: string;
   userName: string;
+  visitDate: string; // Format: YYYY-MM-DD
   timeSlot: string;
-  status: 'Scheduled' | 'Arrived' | 'In Progress' | 'Completed' | 'Cancelled';
+  status: 'Scheduled' | 'Arrived' | 'In Progress' | 'Completed' | 'Cancelled' | 'Missed' | 'Expired';
   createdAt: number;
 }
 

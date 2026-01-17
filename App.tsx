@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Login from './components/Login';
@@ -11,13 +10,11 @@ import { Appointment } from './types';
 const App: React.FC = () => {
   const [user, setUser] = useState<string | null>(localStorage.getItem('bank_user'));
   
-  // Manage all appointments in a single state for data integrity
   const [appointments, setAppointments] = useState<Appointment[]>(() => {
     const saved = localStorage.getItem('bank_appointments');
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Derive the active appointment for the dashboard tracker (the first non-finalized one)
   const activeAppointment = useMemo(() => 
     appointments.find(a => a.status !== 'Completed' && a.status !== 'Cancelled') || null
   , [appointments]);
@@ -36,7 +33,6 @@ const App: React.FC = () => {
 
   const setAppointment = (app: Appointment | null) => {
     if (!app) {
-      // Cancellation case: find the current active and mark as Cancelled
       setAppointments(prev => {
         const lastActiveIdx = prev.findLastIndex(a => a.status !== 'Completed' && a.status !== 'Cancelled');
         if (lastActiveIdx !== -1) {
@@ -48,7 +44,6 @@ const App: React.FC = () => {
         return prev;
       });
     } else {
-      // Update existing or add new
       setAppointments(prev => {
         const idx = prev.findIndex(a => a.id === app.id);
         const next = idx !== -1 ? prev.map((a, i) => i === idx ? app : a) : [...prev, app];
@@ -62,15 +57,15 @@ const App: React.FC = () => {
     <Router>
       <div className="min-h-screen flex flex-col">
         {user && (
-          <nav className="bg-blue-900 text-white p-4 shadow-md flex justify-between items-center">
+          <nav className="bg-blue-900 text-white p-4 shadow-md flex justify-between items-center px-8">
             <div className="flex items-center space-x-6">
               <Link 
                 to="/dashboard" 
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer focus:outline-none"
-                aria-label="SmartBank Dashboard"
+                aria-label="XYZ Bank Dashboard"
               >
                 <i className="fas fa-university text-2xl"></i>
-                <span className="font-bold text-xl tracking-tight">SmartBank Assistant</span>
+                <span className="font-bold text-xl tracking-tight">XYZ Bank</span>
               </Link>
               <Link 
                 to="/appointments"
@@ -95,7 +90,7 @@ const App: React.FC = () => {
           </nav>
         )}
 
-        <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        <main className="flex-grow container mx-auto px-6 py-8 max-w-[1500px]">
           <Routes>
             <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={user ? <Dashboard activeAppointment={activeAppointment} setAppointment={setAppointment} /> : <Navigate to="/login" />} />
@@ -106,8 +101,8 @@ const App: React.FC = () => {
           </Routes>
         </main>
 
-        <footer className="bg-white border-t p-4 text-center text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} SmartBank Advisory System. Demo purposes only.
+        <footer className="bg-white border-t p-6 text-center text-gray-500 text-sm">
+          &copy; {new Date().getFullYear()} XYZ Bank Advisory System. Official demo for secure visit planning.
         </footer>
       </div>
     </Router>
