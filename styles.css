@@ -114,6 +114,11 @@ h3.text-blue-900.uppercase.tracking-widest {
     100% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0); }
 }
 
+/* Completion Toast Animation */
+.completion-toast {
+    box-shadow: 0 15px 40px -10px rgba(22, 163, 74, 0.3);
+}
+
 /* Screen size adaptations */
 @media (min-width: 1280px) {
     .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {

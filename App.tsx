@@ -100,7 +100,7 @@ const App: React.FC = () => {
             <Route path="/login" element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={user ? <Dashboard activeAppointment={activeAppointment} setAppointment={setAppointment} /> : <Navigate to="/login" />} />
             <Route path="/book/:serviceId" element={user ? <AppointmentBooking onBook={setAppointment} /> : <Navigate to="/login" />} />
-            <Route path="/status" element={user ? <StatusTracker appointment={activeAppointment} setAppointment={setAppointment} /> : <Navigate to="/login" />} />
+            <Route path="/status" element={user ? <StatusTracker appointment={activeAppointment} appointments={appointments} setAppointment={setAppointment} /> : <Navigate to="/login" />} />
             <Route path="/appointments" element={user ? <AppointmentsList appointments={appointments} /> : <Navigate to="/login" />} />
             <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
           </Routes>
