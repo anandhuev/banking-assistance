@@ -1,0 +1,142 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Main Dashboard Card Grid - Increased gap for prominence */
+.grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+    gap: 2.5rem !important; 
+    margin-top: 2rem !important;
+}
+
+/* Service Box / Card Styling - Increased size and padding */
+.grid button.transition-all.border-2 {
+    padding: 3rem 2.5rem !important; 
+    min-height: 280px !important; 
+    border-radius: 1.5rem !important; 
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.2s ease !important;
+}
+
+/* Card Icon Container - Larger and more spaced */
+.grid button.transition-all.border-2 div.bg-blue-100 {
+    width: 4.5rem !important; 
+    height: 4.5rem !important;
+    margin-bottom: 2.5rem !important; 
+    border-radius: 1.25rem !important;
+    font-size: 1.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Service Title - Increased font weight and size */
+.grid button.transition-all.border-2 h3 {
+    font-size: 1.5rem !important; 
+    font-weight: 800 !important;
+    color: #111827 !important;
+    line-height: 1.3 !important;
+    margin-top: 0 !important;
+}
+
+/* Service Description - Better readability */
+.grid button.transition-all.border-2 p {
+    font-size: 1rem !important; 
+    margin-top: 1.25rem !important;
+    color: #4b5563 !important;
+    line-height: 1.6 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+/* Hover State - Enhanced physical elevation */
+.grid button.transition-all.border-2:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
+    border-color: #2563eb !important;
+    z-index: 10;
+}
+
+/* Selected State - Prominent highlight */
+.grid button.transition-all.border-2.border-blue-600 {
+    background-color: #f8fbff !important;
+    border-color: #1e40af !important;
+    border-width: 3px !important;
+    box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.1) !important;
+}
+
+/* Header Prominence */
+header h2 {
+    font-size: 2.5rem !important;
+    letter-spacing: -0.03em !important;
+    font-weight: 800 !important;
+}
+
+/* Checklist Panel Adjustments */
+#preparation-panel {
+    margin-top: 5rem !important;
+    padding: 3.5rem !important;
+    border-radius: 2rem !important;
+    border: 1px solid #f1f5f9 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Guidance Box Spacing */
+.bg-yellow-50, .bg-blue-50 {
+    padding: 2.5rem !important;
+    border-radius: 1.5rem !important;
+    margin-top: 2rem !important;
+}
+
+/* LARGE SCREEN OVERRIDES - Making cards bold and spacious */
+@media (min-width: 1280px) {
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+        gap: 3.5rem !important;
+    }
+
+    .grid button.transition-all.border-2 {
+        padding: 4.5rem 3.5rem !important; 
+        min-height: 380px !important; 
+        border-radius: 2rem !important;
+    }
+
+    .grid button.transition-all.border-2 div.bg-blue-100 {
+        width: 5.5rem !important; 
+        height: 5.5rem !important;
+        margin-bottom: 3rem !important; 
+        font-size: 2.25rem !important;
+    }
+
+    .grid button.transition-all.border-2 h3 {
+        font-size: 1.85rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .grid button.transition-all.border-2 p {
+        font-size: 1.125rem !important;
+        line-height: 1.7 !important;
+    }
+}
+
+/* Time Slot Group Styling */
+h5.uppercase.tracking-widest {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Lunch Break Block Specific Styling */
+.bg-gray-100.border-gray-200.rounded-xl.p-3 {
+    transition: opacity 0.3s ease;
+    cursor: default !important;
+}
+
+.bg-gray-100.border-gray-200.rounded-xl.p-3:hover {
+    opacity: 0.8;
+}

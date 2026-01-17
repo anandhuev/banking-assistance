@@ -18,7 +18,7 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({ onBook }) => {
   const [loadingAi, setLoadingAi] = useState(true);
   const [crowdLevel, setCrowdLevel] = useState(Math.floor(Math.random() * 60) + 20);
 
-  // Generate dummy crowd density for all slots once per page load and determine recommended slot
+  // Generate dummy crowd density and determine recommended slot
   const { slotDensities, recommendedSlot } = useMemo(() => {
     const levels = ['Low', 'Medium', 'High'] as const;
     const densities: Record<string, 'Low' | 'Medium' | 'High'> = {};
@@ -27,17 +27,38 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({ onBook }) => {
       densities[slot] = levels[Math.floor(Math.random() * 3)];
     });
 
-    // AI Recommendation Logic: Prefer Low, else Medium, avoid High
     let recommended = TIME_SLOTS.find(s => densities[s] === 'Low');
     if (!recommended) {
       recommended = TIME_SLOTS.find(s => densities[s] === 'Medium');
     }
-    // Fallback if all are high
     if (!recommended) {
       recommended = TIME_SLOTS[0];
     }
 
     return { slotDensities: densities, recommendedSlot: recommended };
+  }, []);
+
+  // Time Slot Grouping Logic
+  const groupedSlots = useMemo(() => {
+    const morning: string[] = [];
+    const afternoon: string[] = [];
+    const evening: string[] = [];
+
+    TIME_SLOTS.forEach(slot => {
+      const hourPart = parseInt(slot.split(':')[0]);
+      const isPM = slot.includes('PM');
+      
+      // Categorization based on prompt examples
+      if (!isPM && hourPart >= 9 && hourPart <= 11) {
+        morning.push(slot);
+      } else if (isPM && (hourPart === 12 || hourPart < 4)) {
+        afternoon.push(slot);
+      } else {
+        evening.push(slot);
+      }
+    });
+
+    return { morning, afternoon, evening };
   }, []);
 
   useEffect(() => {
@@ -79,6 +100,38 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({ onBook }) => {
       case 'High': return 'text-red-600';
       default: return 'text-gray-400';
     }
+  };
+
+  const renderSlot = (slot: string) => {
+    const density = slotDensities[slot];
+    const isSelected = selectedSlot === slot;
+    const isRecommended = slot === recommendedSlot;
+    
+    return (
+      <button
+        key={slot}
+        onClick={() => setSelectedSlot(slot)}
+        className={`p-2 rounded-xl border text-center transition-all flex flex-col gap-1 relative ${
+          isSelected 
+          ? 'bg-blue-900 text-white border-blue-900 shadow-md ring-2 ring-blue-100' 
+          : isRecommended 
+            ? 'border-blue-300 bg-blue-50 hover:bg-blue-100 ring-2 ring-blue-50 ring-offset-1'
+            : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50'
+        }`}
+      >
+        {isRecommended && (
+          <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter shadow-sm whitespace-nowrap z-10">
+            AI Recommended
+          </span>
+        )}
+        <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-800'}`}>
+          {slot}
+        </span>
+        <span className={`text-[9px] font-black uppercase tracking-tighter ${getDensityColor(density, isSelected)}`}>
+          {density} Crowd
+        </span>
+      </button>
+    );
   };
 
   return (
@@ -134,40 +187,45 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({ onBook }) => {
             )}
           </section>
 
-          <section>
-            <h4 className="font-semibold text-gray-700 mb-3">All Available Slots</h4>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-              {TIME_SLOTS.map(slot => {
-                const density = slotDensities[slot];
-                const isSelected = selectedSlot === slot;
-                const isRecommended = slot === recommendedSlot;
-                
-                return (
-                  <button
-                    key={slot}
-                    onClick={() => setSelectedSlot(slot)}
-                    className={`p-2 rounded-xl border text-center transition-all flex flex-col gap-1 relative ${
-                      isSelected 
-                      ? 'bg-blue-900 text-white border-blue-900 shadow-md ring-2 ring-blue-100' 
-                      : isRecommended 
-                        ? 'border-blue-300 bg-blue-50 hover:bg-blue-100 ring-2 ring-blue-50 ring-offset-1'
-                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50'
-                    }`}
-                  >
-                    {isRecommended && (
-                      <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter shadow-sm whitespace-nowrap z-10">
-                        AI Recommended
-                      </span>
-                    )}
-                    <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-800'}`}>
-                      {slot}
-                    </span>
-                    <span className={`text-[9px] font-black uppercase tracking-tighter ${getDensityColor(density, isSelected)}`}>
-                      {density} Crowd
-                    </span>
-                  </button>
-                );
-              })}
+          <section className="space-y-6">
+            <h4 className="font-semibold text-gray-700 mb-1 border-b pb-2">All Available Slots</h4>
+            
+            {/* Morning Group */}
+            <div>
+              <h5 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3 flex items-center gap-2">
+                <i className="fas fa-sun text-yellow-500"></i> Morning Preferred Slots
+              </h5>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                {groupedSlots.morning.map(renderSlot)}
+              </div>
+            </div>
+
+            {/* Lunch Break Block */}
+            <div className="py-4">
+              <div className="bg-gray-100 border border-gray-200 rounded-xl p-3 flex items-center justify-center gap-3 text-gray-400 select-none">
+                <i className="fas fa-utensils"></i>
+                <span className="text-xs font-bold uppercase tracking-wider">Lunch Break (No Service)</span>
+              </div>
+            </div>
+
+            {/* Afternoon Group */}
+            <div>
+              <h5 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3 flex items-center gap-2">
+                <i className="fas fa-cloud-sun text-orange-400"></i> Afternoon Preferred Slots
+              </h5>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                {groupedSlots.afternoon.map(renderSlot)}
+              </div>
+            </div>
+
+            {/* Evening Group */}
+            <div>
+              <h5 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3 flex items-center gap-2">
+                <i className="fas fa-moon text-blue-400"></i> Evening Preferred Slots
+              </h5>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                {groupedSlots.evening.map(renderSlot)}
+              </div>
             </div>
           </section>
         </div>
